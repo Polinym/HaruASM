@@ -1,0 +1,206 @@
+IMMEDIATE = 0x0; ZERO_PAGE = 0x1; ZERO_PAGE_X = 0x2;
+ABSOLUTE = 0x3; ABSOLUTE_X = 0x4; ABSOLUTE_Y = 0x5;
+INDIRECT_X = 0x6; INDIRECT_Y = 0x7; NA = 0x8;
+INDIRECT = 0x9; ZERO_PAGE_Y = 0xa; ACCUMULATOR = 0xb;
+
+END_OPS = ("RTS", "RTI", "NUL", "JMP");
+
+BRANCH_OPS = ("BPL", "BMI", "BVC", "BVS", "BCC", "BCS", "BNE", "BEQ");
+
+
+def set_asm(i, cmd_name, cmd_type, length):
+    asm[i] = (cmd_name, cmd_type, length);
+    
+asm = {};
+
+set_asm(0xff, "NUL", NA, 0x1);
+
+asm[0x69] = ("ADC", IMMEDIATE, 0x2); 
+asm[0x65] = ("ADC", ZERO_PAGE, 0x2);
+asm[0x75] = ("ADC", ZERO_PAGE_X, 0x2);
+asm[0x6d] = ("ADC", ABSOLUTE, 0x3);
+asm[0x7d] = ("ADC", ABSOLUTE_X, 0x3);
+asm[0x79] = ("ADC", ABSOLUTE_Y, 0x3);
+asm[0x61] = ("ADC", INDIRECT_X, 0x2);
+asm[0x71] = ("ADC", INDIRECT_Y, 0x2);
+
+asm[0x29] = ("AND", IMMEDIATE, 0x2);
+asm[0x25] = ("AND", ZERO_PAGE, 0x2);
+asm[0x35] = ("AND", ZERO_PAGE_X, 0x2);
+asm[0x2d] = ("AND", ABSOLUTE, 0x3);
+asm[0x3d] = ("AND", ABSOLUTE_X, 0x3);
+asm[0x39] = ("AND", ABSOLUTE_Y, 0x3);
+asm[0x21] = ("AND", INDIRECT_X, 0x2);
+asm[0x31] = ("AND", INDIRECT_Y, 0x2);
+
+asm[0x0a] = ("ASL", NA, 0x1);
+asm[0x06] = ("ASL", ZERO_PAGE, 0x2);
+asm[0x16] = ("ASL", ZERO_PAGE_X, 0x2);
+asm[0x0e] = ("ASL", ABSOLUTE, 0x3);
+asm[0x1e] = ("ASL", ABSOLUTE_X, 0x3);
+
+set_asm(0x24, "BIT", ZERO_PAGE, 0x2);
+set_asm(0x2c, "BIT", ABSOLUTE, 0x3);
+
+set_asm(0x10, "BPL", IMMEDIATE, 0x2);
+set_asm(0x30, "BMI", IMMEDIATE, 0x2);
+set_asm(0x50, "BVC", IMMEDIATE, 0x2);
+set_asm(0x70, "BVS", IMMEDIATE, 0x2);
+set_asm(0x90, "BCC", IMMEDIATE, 0x2);
+set_asm(0xb0, "BCS", IMMEDIATE, 0x2);
+set_asm(0xd0, "BNE", IMMEDIATE, 0x2);
+set_asm(0xf0, "BEQ", IMMEDIATE, 0x2);
+
+set_asm(0x00, "BRK", NA, 0x1);
+
+asm[0xc9] = ("CMP", IMMEDIATE, 0x2);
+asm[0xc5] = ("CMP", ZERO_PAGE, 0x2);
+asm[0xd5] = ("CMP", ZERO_PAGE_X, 0x2);
+asm[0xcd] = ("CMP", ABSOLUTE, 0x3);
+asm[0xdd] = ("CMP", ABSOLUTE_X, 0x3);
+asm[0xd9] = ("CMP", ABSOLUTE_Y, 0x3);
+asm[0xc1] = ("CMP", INDIRECT_X, 0x2);
+asm[0xd1] = ("CMP", INDIRECT_Y, 0x2);
+
+set_asm(0xe0, "CPX", IMMEDIATE, 0x2);
+set_asm(0xe4, "CPX", ZERO_PAGE, 0x2);
+set_asm(0xec, "CPX", ABSOLUTE, 0x3);
+
+set_asm(0xc0, "CPY", IMMEDIATE, 0x2);
+set_asm(0xc4, "CPY", ZERO_PAGE, 0x2);
+set_asm(0xcc, "CPY", ABSOLUTE, 0x3);
+
+set_asm(0xc6, "DEC", ZERO_PAGE, 0x2);
+set_asm(0xd6, "DEC", ZERO_PAGE_X, 0x2);
+set_asm(0xce, "DEC", ABSOLUTE, 0x3);
+set_asm(0xde, "DEC", ABSOLUTE_X, 0x3);
+
+asm[0x49] = ("EOR", IMMEDIATE, 0x2);
+asm[0x45] = ("EOR", ZERO_PAGE, 0x2);
+asm[0x55] = ("EOR", ZERO_PAGE_X, 0x2);
+asm[0x4d] = ("EOR", ABSOLUTE, 0x3);
+asm[0x5d] = ("EOR", ABSOLUTE_X, 0x3);
+asm[0x59] = ("EOR", ABSOLUTE_Y, 0x3);
+asm[0x41] = ("EOR", INDIRECT_X, 0x2);
+asm[0x51] = ("EOR", INDIRECT_Y, 0x2);
+
+set_asm(0x18, "CLC", NA, 0x1);
+set_asm(0x38, "SEC", NA, 0x1);
+set_asm(0x58, "CLI", NA, 0x1);
+set_asm(0x78, "SEI", NA, 0x1);
+set_asm(0xb8, "CLV", NA, 0x1);
+set_asm(0xd8, "CLD", NA, 0x1);
+set_asm(0xf8, "SED", NA, 0x1);
+
+set_asm(0xe6, "INC", ZERO_PAGE, 0x2);
+set_asm(0xf6, "DEC", ZERO_PAGE, 0x2);
+set_asm(0xee, "DEC", ABSOLUTE, 0x3);
+set_asm(0xfe, "DEC", ABSOLUTE_X, 0x3);
+
+set_asm(0x4c, "JMP", ABSOLUTE, 0x3);
+set_asm(0x6c, "JMP", INDIRECT, 0x3);
+
+set_asm(0x20, "JSR", ABSOLUTE, 0x3);
+
+asm[0xa9] = ("LDA", IMMEDIATE, 0x2);
+asm[0xa5] = ("LDA", ZERO_PAGE, 0x2);
+asm[0xb5] = ("LDA", ZERO_PAGE_X, 0x2);
+asm[0xad] = ("LDA", ABSOLUTE, 0x3);
+asm[0xbd] = ("LDA", ABSOLUTE_X, 0x3);
+asm[0xb9] = ("LDA", ABSOLUTE_Y, 0x3);
+asm[0xa1] = ("LDA", INDIRECT_X, 0x2);
+asm[0xb1] = ("LDA", INDIRECT_Y, 0x2);
+
+set_asm(0xa2, "LDX", IMMEDIATE, 0x2);
+set_asm(0xa6, "LDX", ZERO_PAGE, 0x2);
+set_asm(0xb6, "LDX", ZERO_PAGE_Y, 0x2);
+set_asm(0xae, "LDX", ABSOLUTE, 0x3);
+set_asm(0xbe, "LDX", ABSOLUTE_Y, 0x3);
+
+set_asm(0xa0, "LDY", IMMEDIATE, 0x2);
+set_asm(0xa4, "LDY", ZERO_PAGE, 0x2);
+set_asm(0xb4, "LDY", ZERO_PAGE_Y, 0x2);
+set_asm(0xac, "LDY", ABSOLUTE, 0x3);
+set_asm(0xbc, "LDY", ABSOLUTE_Y, 0x3);
+
+set_asm(0x4a, "LSR", ACCUMULATOR, 0x1);
+set_asm(0x46, "LSR", ZERO_PAGE, 0x2);
+set_asm(0x56, "LSR", ZERO_PAGE_X, 0x2);
+set_asm(0x4e, "LSR", ABSOLUTE, 0x3);
+set_asm(0x5e, "LSR", ABSOLUTE_X, 0x3);
+
+set_asm(0xea, "NOP", NA, 0x1);
+
+asm[0x09] = ("ORA", IMMEDIATE, 0x2);
+asm[0x05] = ("ORA", ZERO_PAGE, 0x2);
+asm[0x15] = ("ORA", ZERO_PAGE_X, 0x2);
+asm[0x0d] = ("ORA", ABSOLUTE, 0x3);
+asm[0x1d] = ("ORA", ABSOLUTE_X, 0x3);
+asm[0x19] = ("ORA", ABSOLUTE_Y, 0x3);
+asm[0x01] = ("ORA", INDIRECT_X, 0x2);
+asm[0x11] = ("ORA", INDIRECT_Y, 0x2);
+
+set_asm(0xaa, "TAX", NA, 0x1);
+set_asm(0x8a, "TXA", NA, 0x1);
+set_asm(0xca, "DEX", NA, 0x1);
+set_asm(0xe8, "INX", NA, 0x1);
+set_asm(0xa8, "TAY", NA, 0x1);
+set_asm(0x98, "TYA", NA, 0x1);
+set_asm(0x88, "DEY", NA, 0x1);
+set_asm(0xc8, "INY", NA, 0x1);
+
+set_asm(0x2a, "ROL", ACCUMULATOR, 0x1);
+set_asm(0x26, "ROL", ZERO_PAGE, 0x2);
+set_asm(0x36, "ROL", ZERO_PAGE_X, 0x2);
+set_asm(0x2e, "ROL", ABSOLUTE, 0x3);
+set_asm(0x3e, "ROL", ABSOLUTE_X, 0x3);
+
+set_asm(0x6a, "ROR", NA, 0x1);
+set_asm(0x66, "ROR", ZERO_PAGE, 0x2);
+set_asm(0x76, "ROR", ZERO_PAGE_X, 0x2);
+set_asm(0x6e, "ROR", ABSOLUTE, 0x3);
+set_asm(0x7e, "ROR", ABSOLUTE_X, 0x3);
+
+set_asm(0x40, "RTI", NA, 0x1);
+set_asm(0x60, "RTS", NA, 0x1);
+
+asm[0xe9] = ("SBC", IMMEDIATE, 0x2);
+asm[0xe5] = ("SBC", ZERO_PAGE, 0x2);
+asm[0xf5] = ("SBC", ZERO_PAGE_X, 0x2);
+asm[0xed] = ("SBC", ABSOLUTE, 0x3);
+asm[0xfd] = ("SBC", ABSOLUTE_X, 0x3);
+asm[0xf9] = ("SBC", ABSOLUTE_Y, 0x3);
+asm[0xe1] = ("SBC", INDIRECT_X, 0x2);
+asm[0xf1] = ("SBC", INDIRECT_Y, 0x2);
+
+asm[0x85] = ("STA", ZERO_PAGE, 0x2);
+asm[0x95] = ("STA", ZERO_PAGE_X, 0x2);
+asm[0x8d] = ("STA", ABSOLUTE, 0x3);
+asm[0x9d] = ("STA", ABSOLUTE_X, 0x3);
+asm[0x99] = ("STA", ABSOLUTE_Y, 0x3);
+asm[0x81] = ("STA", INDIRECT_X, 0x2);
+asm[0x91] = ("STA", INDIRECT_Y, 0x2);
+
+set_asm(0x9a, "TXS", NA, 0x1);
+set_asm(0xba, "TSX", NA, 0x1);
+set_asm(0x48, "PHA", NA, 0x1);
+set_asm(0x68, "PLA", NA, 0x1);
+set_asm(0x08, "PHP", NA, 0x1);
+set_asm(0x28, "PLP", NA, 0x1);
+
+set_asm(0x86, "STX", ZERO_PAGE, 0x2);
+set_asm(0x96, "STX", ZERO_PAGE_Y, 0x2);
+set_asm(0x8e, "STX", ABSOLUTE, 0x3);
+
+set_asm(0x84, "STY", ZERO_PAGE, 0x2);
+set_asm(0x92, "STY", ZERO_PAGE_X, 0x2);
+set_asm(0x8c, "STY", ABSOLUTE, 0x3);
+
+asm_cmd = {};
+for i in asm:
+    val = asm[i];
+    key = val[0] + str(val[1]);
+    asm_cmd[key] = i;
+
+
+
